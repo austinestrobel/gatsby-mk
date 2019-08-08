@@ -7,37 +7,27 @@ const Header = ({ siteTitle }) => (
 
   <header
     style={{
-      background: `#B7DFEA`,
-      marginBottom: `1.45rem`,
+      background: `#B7DFEA`,      
     }}
   >  
     <div
       style={{
-        margin: `0 auto`,
+        margin: `auto`,
         maxWidth: 960,
-        padding: `1.45rem 1.0875rem`,
+        paddingTop: `2rem`,
+        marginBottom: `-60px`,
       }}
     >     
     <Icon 
         style={{
-          maxWidth: `200px`,
+          maxWidth: `180px`,
+          
         }}>
         <Link to="/"/>
     </Icon>
-      <h1 style={{ margin: 0 }}>
-        <Link
-          to="/"
-          style={{
-            color: `white`,
-            textDecoration: `none`,
-          }}
-        >
-          {siteTitle}
-        </Link>
-      </h1>
-
+     
     </div>      
-    <span class="secure">SECURE RESPONSE</span>
+    <div class="secure"></div>
 
   </header>
 )
