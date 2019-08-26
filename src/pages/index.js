@@ -2,22 +2,15 @@ import React from "react"
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import StyledTextField from "../components/material-ui"
-import Checkout from "../components/checkout"
 import { Formik, Form, ErrorMessage } from 'formik';
 import * as Yup from 'yup';
 import axios from 'axios';
+import Checkout from '../components/checkout';
 
 
-// const inputFirstName = document.getElementById("firstName").value;   
-// console.log(inputFirstName);   
+const stripe = window.Stripe("pk_test_CpXDMkBjNYFnjWSHtpzTFjlw00TrgZlcHm");
 
-
-
-
-const IndexPage = () => (
-  
-
-
+const IndexPage = (props) => (
 
 
 
@@ -43,31 +36,9 @@ const IndexPage = () => (
               postalCode: '' 
             }}
 
-
-            // const variables = {{
-            //   firstName: this.firstName.value,
-            //   lastName: 'dasdf',
-            //   emailAddress: 'asdf@gmail.com',
-            //   contactNumber: '1234124',
-            //   address1: '2134 St',
-            //   city: 'asdf',
-            //   stateProvinceGeoId: 'asdf',
-            //   postalCode: 'asdf',
-            // }}
-
-            // validate={values => {
-            //   let errors = {};
-            //   if (!values.emailAddress) {
-            //     errors.emailAddress = 'Required';
-            //   } else if (
-            //     !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.emailAddress)
-            //   ) {
-            //     errors.emailAddress = 'Invalid email address';
-            //   }
-            //   return errors;
-            // }}
+  
             onSubmit={(values, { setSubmitting }) => {
-                axios.post('http://localhost:8080/apps/DonationApp/DonationForm/createCCOSApplication', 
+                axios.post('http://localhost:8080/vapps/TheComponent/screen/Screen/TheSubscreen/TheTransition', 
                 {
                   firstName: values.firstName,
                   lastName: values.lastName,
@@ -85,17 +56,30 @@ const IndexPage = () => (
                   if (res.status === 200) {
                       //Do Stripe API Call
                       // this.chargeStripe(999)
-                      console.log("Moqui returned 200")
-                  }
+                      console.log("Good")
+                    }
+                  
+              })
+              .then(() =>{
+                
+                const { error } = props.stripe.redirectToCheckout({
+                  items: [{ sku: "sku_FZHu67qCyGiGPd", quantity: 1 }],
+                  successUrl: `http://localhost:8000/page-2/`,
+                  cancelUrl: `http://localhost:8000/404`,
+                })
+                if (error) {
+                  console.warn("Error:", error)
+                }
               })
               .catch(error => {
                   console.log("error:", error)
               });
 
-              setTimeout(() => {
-                alert(JSON.stringify(values, null, 2));
-                setSubmitting(false);
-              }, 400);
+              // setTimeout(() => {
+              //   // alert(JSON.stringify(values, null, 2));
+              //   setSubmitting(false);
+              // }, 400);
+
             }}
             
             validationSchema={Yup.object().shape({
@@ -119,8 +103,8 @@ const IndexPage = () => (
                 .required(),
             })}
           >
-
             {
+              
               props => {
                 const {
                   values,
@@ -130,9 +114,9 @@ const IndexPage = () => (
                   handleChange,
                   handleBlur,
                   handleSubmit,
-               
-              } = props;        
-
+                  setSubmitting,
+                
+              } = props;
 
               return (
               <Form class="form" name="form" method="POST" onSubmit={handleSubmit}>
@@ -175,13 +159,19 @@ const IndexPage = () => (
                 {errors.email && touched.email && (
                   <div className="input-feedback">{errors.email}</div>
                 )}
-            
-     <button id="theButton" type="submit" disabled={isSubmitting} method="POST"><Checkout/>Donate</button>
+
+
+                    <button 
+                    type="submit" disabled={isSubmitting} method="POST" >Donate</button>
+                    <Checkout/>
+
 
 
               </Form>     
               );
+              
             }}
+            
           </Formik>
         </div>
       </div>
@@ -189,6 +179,7 @@ const IndexPage = () => (
   </Layout>
 )
 
+// onClick={event => this.redirectToCheckout(event)}
 //<button type="submit" disabled={isSubmitting}><script src="https://checkout.stripe.com/checkout.js" class="stripe-button"
 // data-key="pk_test_CpXDMkBjNYFnjWSHtpzTFjlw00TrgZlcHm" data-amount="999" data-name="Stripe.com"
 // data-description="Widget" data-image="https://stripe.com/img/documentation/checkout/marketplace.png"
